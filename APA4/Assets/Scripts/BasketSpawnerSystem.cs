@@ -9,30 +9,27 @@ using UnityEngine;
 public partial struct BasketSpawnerSystem : ISystem
 {
     [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-        state.RequireForUpdate<BasketPrefabProperties>();
-    }
-
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        state.Enabled = false;
+        var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
+        var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
 
-        var properties = SystemAPI.GetSingleton<BasketPrefabProperties>();
-        var ecb = new EntityCommandBuffer(Allocator.Temp);
-
-        for (var i = 0; i < properties.basketCount; i++)
+        foreach (var (transform, properties) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<BasketPrefabProperties>>())
         {
-            var basket = ecb.Instantiate(properties.basketPrefab);
-            var pos = new float3
+            if (properties.ValueRO.respawn == true)
             {
-                y = properties.bottomY + (properties.basketSpacing * i)
-            };
+                for (var i = 0; i < properties.ValueRO.basketCount; i++)
+                {
+                    var basket = ecb.Instantiate(properties.ValueRO.basketPrefab);
+                    var pos = new float3
+                    {
+                        y = properties.ValueRO.bottomY + (properties.ValueRO.basketSpacing * i)
+                    };
 
-            ecb.SetComponent(basket, LocalTransform.FromPosition(pos));
+                    ecb.SetComponent(basket, LocalTransform.FromPosition(pos));
+                }
+            }
+            properties.ValueRW.respawn = false;
         }
-
-        ecb.Playback(state.EntityManager);
     }
 }

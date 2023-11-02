@@ -12,6 +12,7 @@ public class BasketSpawnerAuthoring : MonoBehaviour
     public int basketSpacing = 2;
     public int bottomY = -14;
     public int numberMissed = 0;
+    public bool respawn = true; 
     public class BasketBaker : Baker<BasketSpawnerAuthoring>
     {
         public override void Bake(BasketSpawnerAuthoring authoring)
@@ -23,7 +24,8 @@ public class BasketSpawnerAuthoring : MonoBehaviour
                 basketCount = authoring.basketCount,
                 basketSpacing = authoring.basketSpacing,
                 bottomY = authoring.bottomY,
-                numberMissed = authoring.numberMissed
+                numberMissed = authoring.numberMissed,
+                respawn = authoring.respawn
             };
 
             AddComponent(entity, propertiesComponent);
@@ -37,4 +39,5 @@ public struct BasketPrefabProperties : IComponentData
     public int basketSpacing;
     public int bottomY;
     public int numberMissed;
+    public bool respawn;
 }
