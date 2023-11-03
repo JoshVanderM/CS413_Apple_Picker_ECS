@@ -34,7 +34,7 @@ public partial struct CollisionSystem : ISystem
                     }
                     foreach (var (transform3, properties3) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<AppleProperties>>())
                     {
-                        properties3.ValueRW.timer = 2f;
+                        properties3.ValueRW.timer = UnityEngine.Random.value * 2;
                     }
                     foreach (var (transform4, properties4) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<BasketPrefabProperties>>())
                     {

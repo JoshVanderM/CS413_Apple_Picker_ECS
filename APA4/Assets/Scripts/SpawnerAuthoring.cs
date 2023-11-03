@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
+using Random = Unity.Mathematics.Random;
 
 public class SpawnerAuthoring : MonoBehaviour
 {
@@ -19,7 +20,8 @@ public class SpawnerAuthoring : MonoBehaviour
                 ApplePrefab = GetEntity(authoring.applePrefab, TransformUsageFlags.Dynamic),
                 delay = authoring.delay,
                 speed = authoring.speed,
-                timer = 2f
+                timer = UnityEngine.Random.value * 2,
+                Random = Random.CreateFromIndex((uint)entity.Index)
             };
 
             AddComponent(entity, propertiesComponent);
@@ -33,4 +35,5 @@ public struct AppleProperties : IComponentData
     public float delay;
     public float speed;
     public float timer;
+    public Random Random;
 }
